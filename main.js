@@ -1,28 +1,31 @@
-define(function(require, exports, module) {
+define(function(require,exports,module) {
+    
+    'use strict';
 	
-    var CommandManager = brackets.getModule("command/CommandManager"),
-    Menus = brackets.getModule("command/Menus"),
-	KeyBindingManager = brackets.getModule("command/KeyBindingManager"),
-    PanelManager = brackets.getModule("view/PanelManager"),
-    ExtensionUtils = brackets.getModule("utils/ExtensionUtils"),        
-    AppInit = brackets.getModule("utils/AppInit");
+    var CommandManager      = brackets.getModule("command/CommandManager"),
+        Menus               = brackets.getModule("command/Menus"),
+        KeyBindingManager   = brackets.getModule("command/KeyBindingManager"),
+        PanelManager        = brackets.getModule("view/WorkspaceManager"),
+        ExtensionUtils      = brackets.getModule("utils/ExtensionUtils"),        
+        AppInit             = brackets.getModule("utils/AppInit");
 
     var LAYERS_EXECUTE = "layers.execute";
-    var panel;
+    var $panel;
     var panelHtml = require("text!panel.html");
 	var $layersIcon = $('<a href="#" title="PSD Layer Viewer" id="brackets-psd-layers-icon"></a>');
-	
-	// Keyboard shortcut
-	CommandManager.register("Open PSD Layer Viewer", LAYERS_EXECUTE, handleLayers);
-	KeyBindingManager.addBinding(LAYERS_EXECUTE, "Ctrl-Shift-P");
 
+    // Keyboard shortcut
+	var registro = CommandManager.register("Open PSD Layer Viewer", LAYERS_EXECUTE, handleLayers);
+	KeyBindingManager.addBinding(LAYERS_EXECUTE, "Ctrl-Shift-Alt-P");
+    
     function handleLayers() {
-        if(panel.isVisible()) {
-            panel.hide();
+        
+        if($panel.isVisible()) {
+            $panel.hide();
 			$layersIcon.removeClass('active');
             CommandManager.get(LAYERS_EXECUTE).setChecked(false);
         } else {
-            panel.show();
+            $panel.show();
 			$layersIcon.addClass('active');
             CommandManager.get(LAYERS_EXECUTE).setChecked(true);
         }
@@ -34,7 +37,8 @@ define(function(require, exports, module) {
         }).appendTo("#main-toolbar .buttons");
 		
 		ExtensionUtils.loadStyleSheet(module, "styles.css");
-        panel = PanelManager.createBottomPanel(LAYERS_EXECUTE, $(panelHtml),200);
+        $panel = PanelManager.createBottomPanel(LAYERS_EXECUTE, $(panelHtml),200);
+
     });
 	
 });
